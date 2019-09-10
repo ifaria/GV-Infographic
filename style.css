@@ -2,9 +2,9 @@
 
 body {
     min-width: 320px;
-    color: black;
+    color: white;
     width: 100%;
-    background-image: url(img/guns_for_non_gun.0.jpg);
+    background-image: url("img/guns_background.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -31,6 +31,10 @@ body {
     left: 0;
     z-index: 3;
     display: block;
+}
+
+#header .title{
+  display: none;
 }
 
 .header:hover {
@@ -155,7 +159,13 @@ body {
     }
 }
 
-.title--big {
+/* End of Header */
+
+.main-container {
+  max-width: 100%;
+}
+
+.title {
     width: 100%;
     z-index: 2;
     display: block;
@@ -164,14 +174,14 @@ body {
 
 .title {
     position: relative;
-    text-align: center;
+    text-align: left;
     text-shadow: 0 0 15px rgba(0, 0, 0, .7);
   
 }
 
 .title-text {
     padding-top: 300px;
-    padding-bottom: 110px;
+    padding-bottom: 300px;
 }
 
 .title-text h1 {
@@ -224,8 +234,38 @@ body {
     transition: ease 1s;
 }
 
-/* MORE */
-/* MORE */
+/* Map */
+
+.map {
+  background-color: white;
+  color: black;
+}
+
+.leaflet {
+  border: 2px solid black;
+  width: 100%;
+  height: 500px;
+}
+
+
+/* summary plots */
+
+.summaries {
+  background-image: url("img/us_congress.jpg");
+  background-size:cover;
+  background-attachment: fixed;
+  width: 100%;
+  height: auto;
+}
+
+.summaries h1 {
+  text-align: center;
+  padding-top:50px;
+  padding-bottom:50px;
+}
+
+
+
 /* MORE */
 
 .concluding-section {

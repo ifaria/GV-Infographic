@@ -1,0 +1,271 @@
+---
+title: "Gun Violence By 115th Congressional Districts"
+output: 
+  html_document:
+    css: style.css
+    includes:
+      in_header: header.html
+      before_body: body.html
+      after_body: footer.html
+      
+---
+<style> .main-container {max-width:100%} </style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+library(leaflet)
+library(maps)
+library(RColorBrewer)
+library(sf)
+# district gini index
+Census_CD115_Gini_Index_17_5YR <- read_csv("C:/Users/ignac/Desktop/RRepository/GunViolenceArchive/Data Sources/Census-CD115-Gini-Index-17_5YR.csv", skip = 1) %>%
+  rename(district = Geography, gini = `Estimate; Gini Index`, error = `Margin of Error; Gini Index`) %>%
+  mutate(id1 = str_sub(Id2, start = 1, 2),
+         id2 = str_sub(Id2, start = 3, 4)) %>%
+  select(-Id, -Id2)
+
+# data downloaded from https://cookpolitical.com/pvi-map-and-district-list
+cooks_district <- read_csv("C:/Users/ignac/Desktop/RRepository/GunViolenceArchive/Data Sources/cooks_district.csv") %>%
+  mutate(state_abbr = str_sub(Dist, 1, 2),
+         id2 = str_sub(Dist, 4, 5)) %>%
+  select(state_abbr, id2, Incumbent, PVI, `Clinton %`, `Trump %`) %>%
+  bind_rows(tibble(state_abbr = "DC", id2 = "00", Incumbent = "Non-voting delegate", PVI = "D+43", `Clinton %` = 90.9, `Trump %` = 4.1)) %>% 
+  mutate(party = ifelse(str_detect(PVI, pattern = "R"), "R", 
+                 ifelse(str_detect(PVI, pattern = "D"), "D", "EVEN")),
+         index = str_extract(PVI, "[0-9]+"),
+         index = as.numeric(ifelse(is.na(index), 0, index)),
+         index = ifelse(party == "R", -1*index, index),
+         id2 = ifelse(str_detect(id2, "[A-Z]+"), "00", id2)) 
+
+# district polygons
+district_lines <- USAboundaries::us_congressional() %>%
+  filter(jurisdiction_type != "territory") %>%
+  select(statefp, cd115fp, state_name, state_abbr, geometry) %>%
+  rename(id1 = statefp, id2 = cd115fp)
+
+district_map <- district_lines %>%
+  inner_join(Census_CD115_Gini_Index_17_5YR) %>%
+  inner_join(cooks_district) %>%
+  st_as_sf()
+
+# Gun related incidents between 2016 - 2018
+incidents <- readRDS("newdata2.rds")
+
+incident_points <- map2(incidents$Longitude, incidents$Latitude, ~st_point(c(.x, .y))) %>%
+  st_sfc(crs = 4326) %>%
+  st_sf(incidents[, !(names(incidents) %in% c("Longitude", "Latitude"))], .)
+
+incident_district_key <- bind_cols(incidents, district_map[as.numeric(st_within(incident_points, district_map)),]) %>%
+  select(Incident, district, id1, id2)
+
+district_summary <- incident_district_key %>%
+  group_by(district) %>%
+  count() %>%
+  arrange((n))
+
+district_map <- district_map %>%
+  inner_join(district_summary)
+
+district_info <- district_map %>%
+  mutate(sq_miles = st_area(geometry),
+         sq_miles = units::set_units(sq_miles, mi^2),
+         sq_miles = as.numeric(sq_miles))
+
+st_geometry(district_info) <- NULL  
+options(scipen = 2)
+
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#### SETTING COLORS
+
+partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 11))
+gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 9))
+incident_district_colors <- colorBin("Purples", domain = c(0, 2646), bins = seq(0, 2646, length.out = 9))
+
+####
+
+### SETTING LABELS
+
+district_labels <- sprintf(
+  "<strong>%s</strong>
+  <br>Number of incidents: %g
+  <br>Gini Index: %g
+  <br>Partisan Index: %s",
+  district_map$district, 
+  district_map$n, 
+  district_map$gini, 
+  district_map$PVI
+) %>% lapply(htmltools::HTML)
+
+###
+```
+<div class="container-fluid map">
+  <div class="row">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+  <h1 style="text-align:center"> the data </h1>
+  <p style="text-align:left">
+
+* Gun related incidents were collected from [Gun Violence Archive](https://www.gunviolencearchive.org/). 
+* Congressional district shape files were gathered from the **USAboundaries** packages in R. 
+* The partisanship between congressional districts can be found from the [Cook Political Report](https://cookpolitical.com/pvi-map-and-district-list). 
+* Income inequality can be found on the [United States Census](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B19083&prodType=table)website.</p>
+
+  </div>
+  <div class="col-md-3"></div>
+  </div>
+  
+<div class="row map">
+  <div class="col-lg-1"> </div>
+  <div class="col-lg-4 map-text"> 
+<br>
+Congressional districts all have around 711,000 people. We could compare incidents between states, because gun laws are mostly a state matter, but examining congressional districts offer greater insight into the role of partisanship in this nation-wide issue.  
+
+* These represent all police-recorded gun incidents from 2016-2018. Suicides are included, which make up a majority of the incidents. *Note:* suicides are included because in countries with guns, successful suicides are highly correlated with the availability of a firearm. <br>
+* The *Cook Index* measures how each district voted in the past two elections. How much does each district lean towards it political affiliation? The higher the index number, the greater the political leaning of the respective district. <br>
+* The *gini index* measures the concentration of wealth within a certain area. Is poverty the major factor in gun related incidents? It can be. Past studies and a preliminary look into the data show that areas in which the income distribution in similar, there are fewer crimes. This means that if everyone is within the same economic class, crime rates tend to drop. The gini index shows the *economic disparity*, so a higher index means that the poor will perceive themselves are poorer. Keep this in mind as we examine the data further. The higher the number, the greater the wealth is concentrated by fewer people.
+
+</div>
+  <div class="col-lg-6 map-chunk">
+
+```{r leaflet_map, fig.align="center", echo=FALSE, message=FALSE, warning=FALSE, fig.cap="115th Congress, 2016 - 2018.", paged.print=FALSE}
+leaflet(district_map) %>%
+  addProviderTiles(providers$Stamen.Toner) %>%
+  addProviderTiles(providers$CartoDB.PositronOnlyLabels) %>%
+  addPolygons(fillColor = ~gini_district_colors(gini), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Income Inequality Index") %>%
+  addPolygons(fillColor = ~partisan_district_colors(index), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Partisan Voter Index") %>%
+  addPolygons(fillColor = ~incident_district_colors(n), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Number of Incidents") %>%
+  addLayersControl(
+    baseGroups = c("(District) Income Inequality Index", "(District) Partisan Voter Index", "(District) Number of Incidents"),
+    options = layersControlOptions(collapse = FALSE)
+  ) %>%
+  setView(lng = -97, lat = 38, zoom = 5)
+
+```
+
+  </div>
+<div class="col-lg-1"></div>
+</div>
+</div>
+</div>
+
+
+<div class="container-fluid summaries">
+<h1>PLOTS</h1>
+<!--row 1-->
+<div class="row">
+<div class="col-lg-6">
+```{r echo=FALSE, fig.height=3, fig.width=6}
+plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) + 
+  geom_histogram(alpha = 0.2, position = "identity") +
+  theme(legend.position = "top") +
+  scale_color_manual(values = c("blue", "white", "red")) +
+  scale_fill_manual(values = c("blue", "white", "red")) +
+  labs(title="Incidents within Districts Histogram (436 Districts)", x = "Incidents", y = "# of Districts") + 
+  theme_classic()
+  
+plotly::ggplotly(plot1)
+
+```
+</div>  
+<div class="col-lg-6 plot-1">
+
+ * Look at this
+ * Look at that
+ * Look at this
+ * Look at that
+    
+</div>
+</div>
+  
+<!--row 2-->
+<div class="row">
+<div class="col-lg-6">
+```{r echo=FALSE, fig.height=3, fig.width=6}
+plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) + 
+  scale_color_manual(values = c("blue", "black", "red")) +
+  geom_point(alpha = .35) +
+  labs(title="Gun Violence by Income Inequality", x = "Income Inequality (Gini) Index", y = "Incidents") +
+  scale_y_continuous(breaks = seq(0, 3000, by = 300)) +
+  theme_grey()
+
+plotly::ggplotly(plot2)
+```
+</div>
+<div class="col-lg-6 plot-1">
+ 
+ * Look at this
+ * Look at that
+ * Look at this
+ * Look at that
+ 
+</div>
+</div>
+
+<!--row 3-->
+<div class="row"> 
+<div class="col-lg-6">
+```{r echo=FALSE, fig.height=3, fig.width=6}
+plot3 <- district_info %>%
+  filter(sq_miles <= 13000) %>%
+  ggplot(aes(x=sq_miles, y = n, color = party)) + 
+  scale_color_manual(values = c("blue", "black", "red")) +
+  geom_point(alpha = .35) +
+  labs(title="Incidents by District Square Miles", x = "Square Miles", y = "Incidents") +
+  #scale_x_continuous(breaks = seq(0, 1000, by = 100), limits = c(0, 1000)) +
+  theme_grey() +
+  facet_grid(party ~ .)
+
+plotly::ggplotly(plot3)
+```
+</div>  
+<div class="col-lg-6 plot-1">
+
+ * Look at this
+ * Look at that
+ * Look at this
+ * Look at that
+ 
+</div>
+</div>
+</div>
+
+### District Table
+
+```{r district-table, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+library(knitr)
+library(kableExtra)
+library(formattable)
+library(DT)
+
+data_table <- district_info %>%
+  mutate(PVI = ifelse(index > 0, color_bar("lightblue")(index), color_bar("red")(index)),
+         gini = color_bar("lightgreen")(gini),
+         n = color_bar("yellow")(n)) %>%
+  select(district, state_name, `Clinton %`, `Trump %`, gini, error, sq_miles, Incumbent, PVI, n)
+
+datatable(data_table, options= list(pageLength= 5, scrollX=T)) 
+```

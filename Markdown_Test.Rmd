@@ -1,0 +1,194 @@
+---
+title: " "
+output: 
+  html_document:
+    css: style.css
+    includes:
+      in_header: header.html
+      before_body: body.html
+      after_body: footer.html
+      
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+library(leaflet)
+library(maps)
+library(RColorBrewer)
+library(sf)
+library(plotly)
+# district gini index
+Census_CD115_Gini_Index_17_5YR <- read_csv("C:/Users/ignac/Desktop/RRepository/GunViolenceArchive/Data Sources/Census-CD115-Gini-Index-17_5YR.csv", skip = 1) %>%
+  rename(district = Geography, gini = `Estimate; Gini Index`, error = `Margin of Error; Gini Index`) %>%
+  mutate(id1 = str_sub(Id2, start = 1, 2),
+         id2 = str_sub(Id2, start = 3, 4)) %>%
+  select(-Id, -Id2)
+
+# data downloaded from https://cookpolitical.com/pvi-map-and-district-list
+cooks_district <- read_csv("C:/Users/ignac/Desktop/RRepository/GunViolenceArchive/Data Sources/cooks_district.csv") %>%
+  mutate(state_abbr = str_sub(Dist, 1, 2),
+         id2 = str_sub(Dist, 4, 5)) %>%
+  select(state_abbr, id2, Incumbent, PVI, `Clinton %`, `Trump %`) %>%
+  bind_rows(tibble(state_abbr = "DC", id2 = "00", Incumbent = "Non-voting delegate", PVI = "D+43", `Clinton %` = 90.9, `Trump %` = 4.1)) %>% 
+  mutate(party = ifelse(str_detect(PVI, pattern = "R"), "R", 
+                 ifelse(str_detect(PVI, pattern = "D"), "D", "EVEN")),
+         index = str_extract(PVI, "[0-9]+"),
+         index = as.numeric(ifelse(is.na(index), 0, index)),
+         index = ifelse(party == "R", -1*index, index),
+         id2 = ifelse(str_detect(id2, "[A-Z]+"), "00", id2)) 
+
+# district polygons
+district_lines <- USAboundaries::us_congressional() %>%
+  filter(jurisdiction_type != "territory") %>%
+  select(statefp, cd115fp, state_name, state_abbr, geometry) %>%
+  rename(id1 = statefp, id2 = cd115fp)
+
+district_map <- district_lines %>%
+  inner_join(Census_CD115_Gini_Index_17_5YR) %>%
+  inner_join(cooks_district) %>%
+  st_as_sf()
+
+# Gun related incidents between 2016 - 2018
+incidents <- readRDS("newdata2.rds")
+
+incident_points <- map2(incidents$Longitude, incidents$Latitude, ~st_point(c(.x, .y))) %>%
+  st_sfc(crs = 4326) %>%
+  st_sf(incidents[, !(names(incidents) %in% c("Longitude", "Latitude"))], .)
+
+incident_district_key <- bind_cols(incidents, district_map[as.numeric(st_within(incident_points, district_map)),]) %>%
+  select(Incident, district, id1, id2)
+
+district_summary <- incident_district_key %>%
+  group_by(district) %>%
+  count() %>%
+  arrange((n))
+
+district_map <- district_map %>%
+  inner_join(district_summary)
+
+district_info <- district_map %>%
+  mutate(sq_miles = st_area(geometry),
+         sq_miles = units::set_units(sq_miles, mi^2),
+         sq_miles = as.numeric(sq_miles))
+
+st_geometry(district_info) <- NULL  
+options(scipen = 2)
+
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#### SETTING COLORS
+
+partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 11))
+gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 9))
+incident_district_colors <- colorBin("Purples", domain = c(0, 2646), bins = seq(0, 2646, length.out = 9))
+
+####
+
+### SETTING LABELS
+
+district_labels <- sprintf(
+  "<strong>%s</strong>
+  <br>Number of incidents: %g
+  <br>Gini Index: %g
+  <br>Partisan Index: %s",
+  district_map$district, 
+  district_map$n, 
+  district_map$gini, 
+  district_map$PVI
+) %>% lapply(htmltools::HTML)
+
+###
+```
+
+```{r leaflet_map, fig.align="center", echo=FALSE, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, fig.cap="The USA, 2016 - 2018.", paged.print=FALSE}
+leaflet(district_map) %>%
+  addProviderTiles(providers$Stamen.Toner) %>%
+  addProviderTiles(providers$CartoDB.PositronOnlyLabels) %>%
+  addPolygons(fillColor = ~gini_district_colors(gini), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Income Inequality Index") %>%
+  addPolygons(fillColor = ~partisan_district_colors(index), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Partisan Voter Index") %>%
+  addPolygons(fillColor = ~incident_district_colors(n), 
+              weight = .1,
+              opacity = 1,
+              color = "black",
+              label = ~district_labels,
+              group = "(District) Number of Incidents") %>%
+  addLayersControl(
+    baseGroups = c("(District) Income Inequality Index", "(District) Partisan Voter Index", "(District) Number of Incidents"),
+    options = layersControlOptions(collapse = FALSE)
+  ) %>%
+  setView(lng = -97, lat = 38, zoom = 5)
+
+```
+
+
+### Plots
+
+```{r echo=FALSE, fig.width=6}
+plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) + 
+  geom_histogram(alpha = 0.2, position = "identity") +
+  theme(legend.position = "top") +
+  scale_color_manual(values = c("blue", "white", "red")) +
+  scale_fill_manual(values = c("blue", "white", "red")) +
+  labs(title="Incidents within Districts Histogram (436 Districts)", x = "Incidents", y = "# of Districts") + 
+  theme_classic()
+  
+ggplotly(plot1)
+
+plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) + 
+  scale_color_manual(values = c("blue", "black", "red")) +
+  geom_point(alpha = .35) +
+  labs(title="Gun Violence by Income Inequality", x = "Income Inequality (Gini) Index", y = "Incidents") +
+  scale_y_continuous(breaks = seq(0, 3000, by = 300)) +
+  theme_grey()
+
+ggplotly(plot2)
+
+plot3 <- district_info %>%
+  filter(sq_miles <= 13000) %>%
+  ggplot(aes(x=sq_miles, y = n, color = party)) + 
+  scale_color_manual(values = c("blue", "black", "red")) +
+  geom_point(alpha = .35) +
+  labs(title="Incidents by District Square Miles", x = "Square Miles", y = "Incidents") +
+  #scale_x_continuous(breaks = seq(0, 1000, by = 100), limits = c(0, 1000)) +
+  theme_grey() +
+  facet_grid(party ~ .)
+
+ggplotly(plot3)
+```
+
+
+### District Table
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+library(knitr)
+library(kableExtra)
+library(formattable)
+library(DT)
+
+data_table <- district_info %>%
+  mutate(PVI = ifelse(index > 0, color_bar("lightblue")(index), color_bar("red")(index)),
+         gini = color_bar("lightgreen")(gini),
+         n = color_bar("yellow")(n)) %>%
+  select(district, state_name, `Clinton %`, `Trump %`, gini, error, sq_miles, Incumbent, PVI, n)
+
+datatable(data_table, options= list(pageLength= 5, scrollX=T)) 
+```

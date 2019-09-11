@@ -126,13 +126,18 @@ district_labels <- sprintf(
 <div class="row map">
   <div class="col-lg-1"> </div>
   <div class="col-lg-4 map-text"> 
-<br>
-Congressional districts all have around 711,000 people. We could compare incidents between states, because gun laws are mostly a state matter, but examining congressional districts offer greater insight into the role of partisanship in this nation-wide issue.  
-
-* These represent all police-recorded gun incidents from 2016-2018. Suicides are included, which make up a majority of the incidents. *Note:* suicides are included because in countries with guns, successful suicides are highly correlated with the availability of a firearm. <br>
-* The *Cook Index* measures how each district voted in the past two elections. How much does each district lean towards it political affiliation? The higher the index number, the greater the political leaning of the respective district. <br>
-* The *gini index* measures the concentration of wealth within a certain area. Is poverty the major factor in gun related incidents? It can be. Past studies and a preliminary look into the data show that areas in which the income distribution in similar, there are fewer crimes. This means that if everyone is within the same economic class, crime rates tend to drop. The gini index shows the *economic disparity*, so a higher index means that the poor will perceive themselves are poorer. Keep this in mind as we examine the data further. The higher the number, the greater the wealth is concentrated by fewer people.
-
+<p>
+Congressional districts all have around 711,000 people. We could compare incidents between states, because gun laws are mostly a state matter, but examining congressional districts offer greater insight into the role of partisanship in this nation-wide issue.
+</p>
+<p>
+These represent all police-recorded gun incidents from 2016-2018. Suicides are included, which make up a majority of the incidents. *Note:* suicides are included because in countries with guns, successful suicides are highly correlated with the availability of a firearm. 
+</p>
+<p>
+The *Cook Index* measures how each district voted in the past two elections. How much does each district lean towards it political affiliation? The higher the index number, the greater the political leaning of the respective district. 
+</p>
+<p>
+The *gini index* measures the concentration of wealth within a certain area. Is poverty the major factor in gun related incidents? It can be. Past studies and a preliminary look into the data show that areas in which the income distribution in similar, there are fewer crimes. This means that if everyone is within the same economic class, crime rates tend to drop. The gini index shows the *economic disparity*, so a higher index means that the poor will perceive themselves are poorer. Keep this in mind as we examine the data further. The higher the number, the greater the wealth is concentrated by fewer people.
+</p>
 </div>
   <div class="col-lg-6 map-chunk">
 
@@ -172,13 +177,17 @@ leaflet(district_map) %>%
 </div>
 </div>
 
-
 <div class="container-fluid summaries">
 <h1>PLOTS</h1>
-<!--row 1-->
-<div class="row">
-<div class="col-lg-6">
-```{r echo=FALSE, fig.height=3, fig.width=6}
+<div id="myCarousel" class="carousel slide row" data-ride="carousel">
+<ol class="carousel-indicators">
+<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+<li data-target="#myCarousel" data-slide-to="1"></li>
+<li data-target="#myCarousel" data-slide-to="2"></li>
+</ol>
+<div class="carousel-inner">
+<div class="item active">
+```{r echo=FALSE, fig.height=6, fig.width=8}
 plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) + 
   geom_histogram(alpha = 0.2, position = "identity") +
   theme(legend.position = "top") +
@@ -190,21 +199,13 @@ plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) +
 plotly::ggplotly(plot1)
 
 ```
-</div>  
-<div class="col-lg-6 plot-1">
-
- * Look at this
- * Look at that
- * Look at this
- * Look at that
-    
+<div class="carousel-caption">
+<h3>From farm to table.</h3>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
 </div>
 </div>
-  
-<!--row 2-->
-<div class="row">
-<div class="col-lg-6">
-```{r echo=FALSE, fig.height=3, fig.width=6}
+<div class="item">
+```{r echo=FALSE, fig.height=6, fig.width=8}
 plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) + 
   scale_color_manual(values = c("blue", "black", "red")) +
   geom_point(alpha = .35) +
@@ -214,21 +215,13 @@ plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) +
 
 plotly::ggplotly(plot2)
 ```
-</div>
-<div class="col-lg-6 plot-1">
- 
- * Look at this
- * Look at that
- * Look at this
- * Look at that
- 
+<div class="carousel-caption">
+<h3></h3>
+<p></p>
 </div>
 </div>
-
-<!--row 3-->
-<div class="row"> 
-<div class="col-lg-6">
-```{r echo=FALSE, fig.height=3, fig.width=6}
+<div class="item">
+```{r echo=FALSE, fig.height=6, fig.width=8}
 plot3 <- district_info %>%
   filter(sq_miles <= 13000) %>%
   ggplot(aes(x=sq_miles, y = n, color = party)) + 
@@ -241,14 +234,17 @@ plot3 <- district_info %>%
 
 plotly::ggplotly(plot3)
 ```
-</div>  
-<div class="col-lg-6 plot-1">
-
- * Look at this
- * Look at that
- * Look at this
- * Look at that
- 
+<div class="carousel-caption">
+</div>
+</div>
+<a href="#myCarousel" class="carousel-control left" data-slide="prev">
+<span class="glyphicon glyphicon-chevron-left"></span>
+<span class="sr-only">Previous</span>
+</a>
+<a href="#myCarousel" class="carousel-control right" data-slide="next">
+<span class="glyphicon glyphicon-chevron-right"></span>
+<span class="sr-only">Next</span>
+</a>
 </div>
 </div>
 </div>

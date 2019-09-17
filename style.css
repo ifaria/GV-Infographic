@@ -2,27 +2,26 @@
 
 body {
     min-width: 320px;
-    color: white;
+    color: black;
     width: 100%;
-    background-image: url("img/guns_background.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
+    background-color:white;
     /* overflow-y: hidden; */
 
 }
 
+h1, h2, h3 {
+  color: white;
+}
 .col-lg-12 {
     float: none;
 }
 
 .header {
     min-width: 320px;
-    height: 110px;
+    height: 70px;
     top: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     border-bottom: 1px solid transparent;
     background-color: rgb(255, 255, 255, .4);
     transition: all .4s ease-in-out;
@@ -42,15 +41,18 @@ body {
 }
 
 .logo-img {
-  height: 60px;
-  width: 51px;
+  height: 50px;
+  width: 45px;
+  margin-bottom: 20px;
 }
 
 .logo span {
     display: inline-block;
-    font-size: 4em;
-    padding-left: 20px;
+    font-size: 3em;
+    padding-left: 10px;
     font-family: 'Biryani', serif; 
+    font-weight: 600
+    ;
 }
 
 .logo-link {
@@ -60,8 +62,10 @@ body {
 
 .logo-link :nth-child(3) {
     font-family: 'Open Sans', sans-serif;
-    color: #4d2100;
+    color: transparent;
     text-decoration: none;
+    background: linear-gradient(#cc3342, #7C0C01);
+    -webkit-background-clip: text;
 }
 
 .logo:hover {
@@ -73,22 +77,20 @@ body {
 .navigation {
     position: relative;
     float: right;
-    margin-top: 10px;
-    vertical-align: middle;
+    margin-top: 3px;
 }
 
 .navigationList {
-    /* margin: 0;
-    padding: 0; */
+    margin-top: 5px;
     list-style-type: none;
     font-size: 1.5em;
-    color: #4d2100;
+    color: #7C0C01;
 }
 
 .navigationList-item {
     position: relative;
     display: inline-block;
-    margin-left: 50px;
+    margin-left: 30px;
 }
 
 .navigationList-item:last-child {
@@ -97,36 +99,45 @@ body {
 
 .navigationList-item--border {
     /* line-height: 30px; */
-    border: 1px solid #4d2100;
-    border-radius: 5px;
-    padding: 10px 24px;
+    border: 1px solid #7C0C01;
+    border-radius: 15px;
+    padding: 7px 20px;
 }
 
 .navigationList-link:link {
     text-decoration: none;
-    color: #4d2100;
-    transition: ease-in-out 1s;
+    color: #7C0C01;
+    transition: ease-in-out .5s;
 }
 
 .navigationList-link:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.navigationList-link:last-child:hover {
     color: white;
     text-decoration: none;
 }
 
-.navigationList-item--border:hover {
-    background-color: #4d2100;
-    transition: ease-in-out 1s;
-    text-decoration: none;
+.navigationList-link:visted {
+  color: #7c0c01;
 }
 
+.navigationList-item--border:hover {
+    background-color: #7C0C01;
+    transition: ease-in-out 1s;
+    text-decoration: none;
+    color: white;
+}
+
+/*
 @media (max-width: 800px) { 
-    .header {
-        height: 100px;
-    }
-    .logo span{
-    font-size: .5em;
+    .logo-img {
+      margin-bottom: 6px;
     }
 }
+*/
 
 .burger {
     display: none;
@@ -150,10 +161,7 @@ body {
 }
 
 @media (max-width: 700px) {
-    .header {
-        height: 75px;
-        padding: 0px;
-    }
+
     .burger {
         right: 10px;
     }
@@ -165,68 +173,79 @@ body {
   max-width: 100%;
 }
 
+.gap {
+  height:75px;
+  width: 100%;
+}
+
 .title {
     width: 100%;
     z-index: 2;
     display: block;
-    height: 710px;
-}
-
-.title {
+    height: 800px;
     position: relative;
     text-align: left;
     text-shadow: 0 0 15px rgba(0, 0, 0, .7);
-  
+    background-image: url("img/guns_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .title-text {
-    padding-top: 300px;
-    padding-bottom: 300px;
+    position:sticky;
+    color: white;
+    top: 400px;
+    padding-bottom: 20px;
 }
 
 .title-text h1 {
     font-weight: 400;
     font-size: 4em;
     padding: 0;
-    color: white;
 }
 
 @media (max-width: 1300px) {
-    .title--big {
-        height: auto;
-        max-width: 100%;
-        background-size: cover;
-    }
+
 }
 @media (max-width: 875px) {
-    .title--big {
-        height: auto;
-        max-width: 100%;
-        background-size: cover;
+
+    .title {
+      height: 600px;
     }
+
+    .title-text {
+    padding-top: 225px;
+}
     .title-text h1 {
         font-weight: 400;
         font-size: 3em;
     }
+  
 } 
 
 @media (max-width: 675px) {
-    .title--big {
-        height: auto;
-        max-width: 100%;
-        background-size: cover;
-    }
 
+    .title {
+      height: 500px;
+    }
     .title-text {
-        padding-top: 175px;
-        padding-bottom: 50px;
-    }
-
-    .title-text h1 {
-        font-weight: 400;
-        font-size: 2em;
-    }
+    padding-top: 200px;
+}
 } 
+
+.jumbotron {
+  margin-bottom: 0;
+}
+
+.title .container-fluid {
+  height: 100%;
+}
+
+.title .container-fluid .row {
+  height: 100%;
+}
+
 
 
 .active {
@@ -236,15 +255,75 @@ body {
 
 /* Map */
 
+.map .space {
+  display: block;
+  height: 70px;
+  margin: none;
+  padding: none;
+}
+
+@media (max-width: 990px) {
+    .map .space {
+        display: none;
+    }
+}
+
+.map h1 {
+  font-size: 50px;
+  height: 1em;
+  margin-bottom: 27px;
+  color: black;
+}
+
+.map ul {
+  border:solid 3px black;
+  border-radius: 20px;
+  list-style: none;
+  padding: 1em 2em;
+  background-color: floralwhite;
+}
+
 .map {
   background-color: white;
   color: black;
 }
 
-.leaflet {
-  border: 2px solid black;
-  width: 100%;
-  height: 500px;
+
+.map a {
+  color: #7c0f01;
+  font-weight: bold;
+}
+
+.map i {
+  margin-right: 1em;
+  color: #7c0f01;
+}
+
+#gradient-across {
+  --color-stop-1: #7c0f01;
+  --color-stop-2: black;
+  --color-stop-3: #ba1200;
+}
+
+.line-divider {
+  fill: url(#gradient-across);
+  max-width: 50%;
+  margin: 30px;
+}
+
+.map-chunk {
+  text-align: center;
+}
+.map-chunk .html-widget {
+  border: 5px solid black;
+  contain: content;
+  border-radius: 10px;
+}
+
+@media (max-width: 675px) {
+    .map-chunk .html-widget {
+        height: 380px !important;
+    }
 }
 
 
@@ -256,22 +335,110 @@ body {
   background-attachment: fixed;
   width: 100%;
   height: auto;
+  padding-bottom: 136px;
 }
 
 .summaries h1 {
   text-align: center;
-  padding-top:50px;
-  padding-bottom:50px;
+  padding:50px;
+  text-transform: uppercase;
 }
 
+.carousel {
+  height: 100%;
+}
+.carousel-inner {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
 
+.carousel-indicators li, .carousel-indicators .active {
+  border: 2px solid black;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
+.carousel-indicators li {
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.carousel-indicators .active {
+  background-color: white;
+}
+
+.well {
+  background-color: rgba(255, 255, 255, .9);  
+  border: none;
+  border-radius: 30px;
+  padding: 4px;
+}
+
+.carousel-control {
+  border-radius: 30px;
+}
+
+.thumbnail {
+  padding: 150px 15px 150px 15px;
+  border: none;
+}
+
+.thumbnail h3 {
+  color: black;
+}
+
+.item .row {
+  height: inherit;
+}
+
+.item .col-md-5 {
+  height: inherit;
+}
+
+.thumbnail p {
+  text-align: justify;
+}
+
+/* District Table */
+
+.level1 {
+  color: black;
+}
+
+.rheader {
+  border: solid black 1px;
+  background-color: #260603;
+}
+
+.district-table h1 {
+  font-family: 'Biryani';
+  color: white;
+  margin: 0;
+  font-weight: 500;
+  font-size: 40px;
+  padding: 0;
+  display: inline-block;
+  text-align: center;
+}
+
+#gradient-across-2 {
+  --color-stop-1: #7c0f01;
+  --color-stop-2: white;
+  --color-stop-3: ghostwhite;
+}
+
+.line-divider-2 {
+  fill: url(#gradient-across-2);
+  margin: 4px;
+  max-width: 100% !important;
+}
 
 /* MORE */
 
 .concluding-section {
     height: 350px;
     width: 100%;
- 
     background-attachment: fixed;
     background-image: url(red-forest-3.jpg);
     background-position: center center;

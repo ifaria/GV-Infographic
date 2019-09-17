@@ -5,11 +5,26 @@ output:
     css: style.css
     includes:
       in_header: header.html
-      before_body: body.html
       after_body: footer.html
       
 ---
-<style> .main-container {max-width:100%} </style>
+<style> .main-container {max-width:100%; padding:0;} </style>
+
+<svg aria-hidden="true" focusable="false" style="width:0;height:0;position:absolute;">
+<linearGradient id="gradient-across" x2="1" y2="1">
+<stop offset="0%" stop-color="var(--color-stop-1)" />
+<stop offset="50%" stop-color="var(--color-stop-2)" />
+<stop offset="100%" stop-color="var(--color-stop-3)" />
+</linearGradient>
+</svg>
+
+<svg aria-hidden="true" focusable="false" style="width:0;height:0;position:absolute;">
+<linearGradient id="gradient-across-2" y2="1">
+<stop offset="0%" stop-color="var(--color-stop-1)" />
+<stop offset="50%" stop-color="var(--color-stop-2)" />
+<stop offset="100%" stop-color="var(--color-stop-3)" />
+</linearGradient>
+</svg>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -81,7 +96,19 @@ options(scipen = 2)
 
 
 ```
+<div class="gap">
+</div>
 
+<div class="jumbotron title">
+<div class="container-fluid">
+<div class="row">
+<div class="col-lg-12 title-text">
+<h1>Where is the gun violence coming from?</h1>
+<h3>A partisan look into 115th Congressional Districts.</h3>
+</div>
+</div>
+</div>
+</div>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #### SETTING COLORS
@@ -109,23 +136,33 @@ district_labels <- sprintf(
 ```
 <div class="container-fluid map">
   <div class="row">
-  <div class="col-md-3"></div>
-  <div class="col-md-6">
-  <h1 style="text-align:center"> the data </h1>
-  <p style="text-align:left">
+  <div class="col-lg-3 col-md-2 col-sm-1 col-xs-0"></div>
+  <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+  <h1 id="the-data"> the data </h1>
 
-* Gun related incidents were collected from [Gun Violence Archive](https://www.gunviolencearchive.org/). 
-* Congressional district shape files were gathered from the **USAboundaries** packages in R. 
-* The partisanship between congressional districts can be found from the [Cook Political Report](https://cookpolitical.com/pvi-map-and-district-list). 
-* Income inequality can be found on the [United States Census](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B19083&prodType=table)website.</p>
+<ul>
+<li><i class="fas fa-asterisk"></i>Gun related incidents were collected from [Gun Violence Archive](https://www.gunviolencearchive.org/).</li>
+<li><i class="fas fa-asterisk"></i>Congressional district shape files were gathered from the **USAboundaries** packages in R. </li>
+<li><i class="fas fa-asterisk"></i>The partisanship between congressional districts can be found from the [Cook Political Report](https://cookpolitical.com/pvi-map-and-district-list). </li>
+<li><i class="fas fa-asterisk"></i>Income inequality can be found on the [United States Census](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B19083&prodType=table)  website.</li>
+</ul>
+</div>
+<div class="col-lg-3 col-md-2 col-sm-1 col-xs-0"></div>
+</div>
+<div class="row">
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+<center>
+<svg xmlns="http://www.w3.org/2000/svg" class="line-divider" width="100%" height="60" viewBox="0 0 400 26.1" style="max-width:80%" fill="url(#gradient-across);" aria-hidden="true" focusable="false"><g id="svgg"><path id="path0" d="M119.3 0.8C112.8 3.6 113.9 10.2 121.9 15.5 123.5 16.6 123.7 16.5 116.5 18.7 94.1 25.5 81.1 25.5 70.8 18.6 66 15.4 64.6 16.1 68.8 19.7 77.7 27.5 95.1 28.1 122.3 21.5L129 19.9 133 21.2C147.5 25.9 175.4 24 193.4 17.1 193.8 16.9 194.4 17.6 194.9 18.6 197.1 23.2 205.9 22.4 205.9 17.7 205.9 16.7 206.2 16.7 209.5 17.9 228.1 24.2 253.2 25.7 266.8 21.2L271 19.8 279 21.7C306.6 28.1 322.2 27.5 331.2 19.7 334.7 16.7 334 15.1 330.4 17.9 321.3 25.2 307.1 25.6 285.2 19.2L277.1 16.8 280.4 13.6C285.6 8.6 286.5 5.3 283.5 2.6 279.2-1.1 271.6-0.2 273.4 3.9 274 5.1 274.2 5.2 275.9 4.9 281 4 282 4 282.7 4.8 284.1 6.5 282.1 9.7 277.2 13.6L274.4 15.7 269.6 14.3C244.9 6.9 222 6 207.6 12 205.8 12.8 205.7 12.8 204.6 11.8 202.1 9.4 198.4 9.5 195.9 11.8 194.8 12.8 194.8 12.8 191.8 11.7 175.1 5.9 153.5 7 128.8 14.8L125.7 15.8 123.5 14.2C118.7 10.8 115.9 6.5 117.3 4.8 118 4 119.1 4 124 4.9 125.6 5.2 126 5.1 126.5 4.1 128.1 1.2 123.4-1 119.3 0.8M79.8 8.9C72.3 10 65.1 11.5 50.6 15.1 24.7 21.6 7.9 21.4 4.2 14.8 3.2 13.2 1.6 12.8 0.5 14.1 -0.6 15.5 0.3 16.4 4.4 18.2 18.1 24.2 31.1 23.8 57.1 16.5 85.4 8.5 106.2 8.4 114.8 16.2 115.3 16.7 115.9 16.9 116.1 16.7 117.2 15.7 109.6 11.4 104 9.7 99 8.3 87.1 7.9 79.8 8.9M299.1 9C292.2 10.4 282.5 15.3 283.9 16.7 284.1 16.9 284.7 16.7 285.2 16.2 293.1 9.1 313.5 8.5 337.3 14.9 341.5 16 347.9 17.7 351.6 18.7 368.8 23.2 383.8 23.2 394.1 18.8 396.4 17.8 398.6 16.9 399.1 16.7 400.2 16.3 400.3 14.7 399.2 13.6 398 12.4 397.2 12.6 395.8 14.9 391.6 21.5 374.9 21.5 348.3 14.8 323 8.5 309.4 6.9 299.1 9M181.6 11.3C185.7 11.9 193.7 13.8 194.2 14.3 194.8 14.8 172.4 20.3 165.7 21.3 154.7 22.9 140.5 22.1 133.9 19.5 132.4 18.8 132.5 18.8 137.5 17.3 158.5 11.2 169.9 9.6 181.6 11.3M238.8 11.5C244.4 12.4 246.5 12.9 258.8 16.2 268.3 18.9 268.3 18.9 262.6 20.4 250.5 23.6 238 22.8 217.7 17.7 212.8 16.5 208.1 15.3 207.3 15.2 205.1 14.6 205.6 14.1 209.3 13.1 218.6 10.7 229.6 10.1 238.8 11.5"/></g></svg>
+</center>
+</div>
+<div class="col-lg-3"></div>
+</div>
 
-  </div>
-  <div class="col-md-3"></div>
-  </div>
-  
 <div class="row map">
-  <div class="col-lg-1"> </div>
-  <div class="col-lg-4 map-text"> 
+  <div class="col-lg-1 col-md-0 col-sm-0 col-xs-0"></div>
+  <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 map-text">
+<p class="space">
 <p>
 Congressional districts all have around 711,000 people. We could compare incidents between states, because gun laws are mostly a state matter, but examining congressional districts offer greater insight into the role of partisanship in this nation-wide issue.
 </p>
@@ -139,9 +176,9 @@ The *Cook Index* measures how each district voted in the past two elections. How
 The *gini index* measures the concentration of wealth within a certain area. Is poverty the major factor in gun related incidents? It can be. Past studies and a preliminary look into the data show that areas in which the income distribution in similar, there are fewer crimes. This means that if everyone is within the same economic class, crime rates tend to drop. The gini index shows the *economic disparity*, so a higher index means that the poor will perceive themselves are poorer. Keep this in mind as we examine the data further. The higher the number, the greater the wealth is concentrated by fewer people.
 </p>
 </div>
-  <div class="col-lg-6 map-chunk">
-
-```{r leaflet_map, fig.align="center", echo=FALSE, message=FALSE, warning=FALSE, fig.cap="115th Congress, 2016 - 2018.", paged.print=FALSE}
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 map-chunk">
+<h3>115th Congress, 2016 - 2018</h3>
+```{r leaflet_map, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width="100%", paged.print=FALSE}
 leaflet(district_map) %>%
   addProviderTiles(providers$Stamen.Toner) %>%
   addProviderTiles(providers$CartoDB.PositronOnlyLabels) %>%
@@ -170,24 +207,37 @@ leaflet(district_map) %>%
   setView(lng = -97, lat = 38, zoom = 5)
 
 ```
+</div>
+<div class="col-lg-1 col-md-0 col-sm-0 col-xs-0"></div>
+</div>
+</div>
+</div>
 
-  </div>
-<div class="col-lg-1"></div>
-</div>
-</div>
-</div>
+<!-- Summaries -->
 
 <div class="container-fluid summaries">
-<h1>PLOTS</h1>
-<div id="myCarousel" class="carousel slide row" data-ride="carousel">
+<div class="col-lg-12">
+<h1> In Summary </h1>
+<div class="well">
+<div id="myCarousel" class="carousel slide" data-interval="20000" data-pause="hover" data-ride="carousel">
+<!-- Indicators -->
 <ol class="carousel-indicators">
 <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
 <li data-target="#myCarousel" data-slide-to="1"></li>
 <li data-target="#myCarousel" data-slide-to="2"></li>
 </ol>
-<div class="carousel-inner">
+<!-- Carousel items -->
+<div class="carousel-inner" role="listbox">
 <div class="item active">
-```{r echo=FALSE, fig.height=6, fig.width=8}
+<div class="row">
+<div class="col-md-4">
+<div class="thumbnail">
+<h3>Incidents within Districts</h3>
+<p>The closer to the left, the fewer the number of incidents that occured. Success here is marked by having the highest bar on the far left. Here, we see that Republicans clearly win. There are more blue boxes towards the right, indicating that Democrats have the most dangerous districts.</p>
+</div>
+</div>
+<div class="col-md-8">
+```{r echo=FALSE, out.width=700}
 plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) + 
   geom_histogram(alpha = 0.2, position = "identity") +
   theme(legend.position = "top") +
@@ -199,13 +249,21 @@ plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) +
 plotly::ggplotly(plot1)
 
 ```
-<div class="carousel-caption">
-<h3>From farm to table.</h3>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
 </div>
 </div>
+<!--/row-->
+</div>
+<!--/item-->
 <div class="item">
-```{r echo=FALSE, fig.height=6, fig.width=8}
+<div class="row">
+<div class="col-md-4">
+<div class="thumbnail">
+<h3>Gun Violence by Income Inequality</h3>
+<p>The further towards the right marks a higher Gini index, indicating that these districts have the majority of their wealth concentrated in the between fewer people. The higher the dot is, the greater the number of incidents that occured. Again, we see fewer red dots on the higher end of the chart.</p>
+</div>
+</div>
+<div class="col-md-8">
+```{r echo=FALSE, out.width=700}
 plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) + 
   scale_color_manual(values = c("blue", "black", "red")) +
   geom_point(alpha = .35) +
@@ -215,13 +273,20 @@ plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) +
 
 plotly::ggplotly(plot2)
 ```
-<div class="carousel-caption">
-<h3></h3>
-<p></p>
 </div>
 </div>
+<!--/row-->
+</div>
+<!--/item-->
 <div class="item">
-```{r echo=FALSE, fig.height=6, fig.width=8}
+<div class="row">
+<div class="col-md-4"><div class="thumbnail">
+<h3>Incidents by Square Area</h3>
+<p>The further to the left, the smaller the square miles the district is, meaning there are more people in a small area. We see that the red dots extend further towards the right than the blue dots.</p>
+</div>
+</div>
+<div class="col-md-8">
+```{r echo=FALSE, out.width=700}
 plot3 <- district_info %>%
   filter(sq_miles <= 13000) %>%
   ggplot(aes(x=sq_miles, y = n, color = party)) + 
@@ -234,34 +299,73 @@ plot3 <- district_info %>%
 
 plotly::ggplotly(plot3)
 ```
-<div class="carousel-caption">
 </div>
 </div>
-<a href="#myCarousel" class="carousel-control left" data-slide="prev">
-<span class="glyphicon glyphicon-chevron-left"></span>
+<!--/row-->
+</div>
+<!--/item-->
+</div>
+<!--/carousel-inner-->
+<!-- Left and right controls-->
+<a href="#myCarousel" class="carousel-control left" data-slide="prev" role="button">
+<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 <span class="sr-only">Previous</span>
 </a>
-<a href="#myCarousel" class="carousel-control right" data-slide="next">
-<span class="glyphicon glyphicon-chevron-right"></span>
+<a href="#myCarousel" class="carousel-control right" data-slide="next" role="button">
+<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 <span class="sr-only">Next</span>
 </a>
 </div>
+<!--/myCarousel2-->
+</div>
+<!--/well-->
 </div>
 </div>
 
-### District Table
-
+<div class="container-fluid district-table">
+<div class="row rheader">
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+<h1>District Table</h1>
+</div>
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+<center>
+<svg xmlns="http://www.w3.org/2000/svg" class="line-divider-2" width="80%" height="30" viewBox="0 0 400 26.1" style="max-width:80%" fill="url(#gradient-across-2);" aria-hidden="true" focusable="false"><g id="svgg"><path id="path0" d="M119.3 0.8C112.8 3.6 113.9 10.2 121.9 15.5 123.5 16.6 123.7 16.5 116.5 18.7 94.1 25.5 81.1 25.5 70.8 18.6 66 15.4 64.6 16.1 68.8 19.7 77.7 27.5 95.1 28.1 122.3 21.5L129 19.9 133 21.2C147.5 25.9 175.4 24 193.4 17.1 193.8 16.9 194.4 17.6 194.9 18.6 197.1 23.2 205.9 22.4 205.9 17.7 205.9 16.7 206.2 16.7 209.5 17.9 228.1 24.2 253.2 25.7 266.8 21.2L271 19.8 279 21.7C306.6 28.1 322.2 27.5 331.2 19.7 334.7 16.7 334 15.1 330.4 17.9 321.3 25.2 307.1 25.6 285.2 19.2L277.1 16.8 280.4 13.6C285.6 8.6 286.5 5.3 283.5 2.6 279.2-1.1 271.6-0.2 273.4 3.9 274 5.1 274.2 5.2 275.9 4.9 281 4 282 4 282.7 4.8 284.1 6.5 282.1 9.7 277.2 13.6L274.4 15.7 269.6 14.3C244.9 6.9 222 6 207.6 12 205.8 12.8 205.7 12.8 204.6 11.8 202.1 9.4 198.4 9.5 195.9 11.8 194.8 12.8 194.8 12.8 191.8 11.7 175.1 5.9 153.5 7 128.8 14.8L125.7 15.8 123.5 14.2C118.7 10.8 115.9 6.5 117.3 4.8 118 4 119.1 4 124 4.9 125.6 5.2 126 5.1 126.5 4.1 128.1 1.2 123.4-1 119.3 0.8M79.8 8.9C72.3 10 65.1 11.5 50.6 15.1 24.7 21.6 7.9 21.4 4.2 14.8 3.2 13.2 1.6 12.8 0.5 14.1 -0.6 15.5 0.3 16.4 4.4 18.2 18.1 24.2 31.1 23.8 57.1 16.5 85.4 8.5 106.2 8.4 114.8 16.2 115.3 16.7 115.9 16.9 116.1 16.7 117.2 15.7 109.6 11.4 104 9.7 99 8.3 87.1 7.9 79.8 8.9M299.1 9C292.2 10.4 282.5 15.3 283.9 16.7 284.1 16.9 284.7 16.7 285.2 16.2 293.1 9.1 313.5 8.5 337.3 14.9 341.5 16 347.9 17.7 351.6 18.7 368.8 23.2 383.8 23.2 394.1 18.8 396.4 17.8 398.6 16.9 399.1 16.7 400.2 16.3 400.3 14.7 399.2 13.6 398 12.4 397.2 12.6 395.8 14.9 391.6 21.5 374.9 21.5 348.3 14.8 323 8.5 309.4 6.9 299.1 9M181.6 11.3C185.7 11.9 193.7 13.8 194.2 14.3 194.8 14.8 172.4 20.3 165.7 21.3 154.7 22.9 140.5 22.1 133.9 19.5 132.4 18.8 132.5 18.8 137.5 17.3 158.5 11.2 169.9 9.6 181.6 11.3M238.8 11.5C244.4 12.4 246.5 12.9 258.8 16.2 268.3 18.9 268.3 18.9 262.6 20.4 250.5 23.6 238 22.8 217.7 17.7 212.8 16.5 208.1 15.3 207.3 15.2 205.1 14.6 205.6 14.1 209.3 13.1 218.6 10.7 229.6 10.1 238.8 11.5"/></g></svg>
+</center>
+</div>
+<div class="col-lg-3 col-md-3" col-sm-3 col-xs-0></div>
+</div>
+<div class="row">
+<div class="col-lg-12">
 ```{r district-table, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 library(knitr)
 library(kableExtra)
 library(formattable)
 library(DT)
 
-data_table <- district_info %>%
+#data_table <- district_info %>%
+#  mutate(PVI = ifelse(index > 0, color_bar("lightblue")(index), color_bar("red")(index)),
+#         gini = color_bar("lightgreen")(gini),
+#         n = color_bar("yellow")(n)) %>%
+#  select(district, state_name, `Clinton %`, `Trump %`, gini, error, sq_miles, Incumbent, PVI, n)
+#formattable(datatable(data_table, options= list(pageLength= 5, scrollX=T)))
+
+as.datatable(district_info %>%
   mutate(PVI = ifelse(index > 0, color_bar("lightblue")(index), color_bar("red")(index)),
          gini = color_bar("lightgreen")(gini),
          n = color_bar("yellow")(n)) %>%
-  select(district, state_name, `Clinton %`, `Trump %`, gini, error, sq_miles, Incumbent, PVI, n)
-
-datatable(data_table, options= list(pageLength= 5, scrollX=T)) 
+  select(district, state_name, `Clinton %`, `Trump %`, gini, error, sq_miles, Incumbent, PVI, n) %>%
+  formattable())
 ```
+</div>
+</div>
+<div class="row rheader">
+<div class="col-lg-3 col-md-3 col-sm-0 col-xs-0"></div>
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<center>
+<svg xmlns="http://www.w3.org/2000/svg" class="line-divider-2" width="80%" height="30" viewBox="0 0 400 26.1" style="max-width:80%" fill="url(#gradient-across-2);" aria-hidden="true" focusable="false"><g id="svgg"><path id="path0" d="M119.3 0.8C112.8 3.6 113.9 10.2 121.9 15.5 123.5 16.6 123.7 16.5 116.5 18.7 94.1 25.5 81.1 25.5 70.8 18.6 66 15.4 64.6 16.1 68.8 19.7 77.7 27.5 95.1 28.1 122.3 21.5L129 19.9 133 21.2C147.5 25.9 175.4 24 193.4 17.1 193.8 16.9 194.4 17.6 194.9 18.6 197.1 23.2 205.9 22.4 205.9 17.7 205.9 16.7 206.2 16.7 209.5 17.9 228.1 24.2 253.2 25.7 266.8 21.2L271 19.8 279 21.7C306.6 28.1 322.2 27.5 331.2 19.7 334.7 16.7 334 15.1 330.4 17.9 321.3 25.2 307.1 25.6 285.2 19.2L277.1 16.8 280.4 13.6C285.6 8.6 286.5 5.3 283.5 2.6 279.2-1.1 271.6-0.2 273.4 3.9 274 5.1 274.2 5.2 275.9 4.9 281 4 282 4 282.7 4.8 284.1 6.5 282.1 9.7 277.2 13.6L274.4 15.7 269.6 14.3C244.9 6.9 222 6 207.6 12 205.8 12.8 205.7 12.8 204.6 11.8 202.1 9.4 198.4 9.5 195.9 11.8 194.8 12.8 194.8 12.8 191.8 11.7 175.1 5.9 153.5 7 128.8 14.8L125.7 15.8 123.5 14.2C118.7 10.8 115.9 6.5 117.3 4.8 118 4 119.1 4 124 4.9 125.6 5.2 126 5.1 126.5 4.1 128.1 1.2 123.4-1 119.3 0.8M79.8 8.9C72.3 10 65.1 11.5 50.6 15.1 24.7 21.6 7.9 21.4 4.2 14.8 3.2 13.2 1.6 12.8 0.5 14.1 -0.6 15.5 0.3 16.4 4.4 18.2 18.1 24.2 31.1 23.8 57.1 16.5 85.4 8.5 106.2 8.4 114.8 16.2 115.3 16.7 115.9 16.9 116.1 16.7 117.2 15.7 109.6 11.4 104 9.7 99 8.3 87.1 7.9 79.8 8.9M299.1 9C292.2 10.4 282.5 15.3 283.9 16.7 284.1 16.9 284.7 16.7 285.2 16.2 293.1 9.1 313.5 8.5 337.3 14.9 341.5 16 347.9 17.7 351.6 18.7 368.8 23.2 383.8 23.2 394.1 18.8 396.4 17.8 398.6 16.9 399.1 16.7 400.2 16.3 400.3 14.7 399.2 13.6 398 12.4 397.2 12.6 395.8 14.9 391.6 21.5 374.9 21.5 348.3 14.8 323 8.5 309.4 6.9 299.1 9M181.6 11.3C185.7 11.9 193.7 13.8 194.2 14.3 194.8 14.8 172.4 20.3 165.7 21.3 154.7 22.9 140.5 22.1 133.9 19.5 132.4 18.8 132.5 18.8 137.5 17.3 158.5 11.2 169.9 9.6 181.6 11.3M238.8 11.5C244.4 12.4 246.5 12.9 258.8 16.2 268.3 18.9 268.3 18.9 262.6 20.4 250.5 23.6 238 22.8 217.7 17.7 212.8 16.5 208.1 15.3 207.3 15.2 205.1 14.6 205.6 14.1 209.3 13.1 218.6 10.7 229.6 10.1 238.8 11.5"/></g></svg>
+</center>
+</div>
+<div class="col-lg-3 col-md-3 col-sm-0 col-xs-0"></div>
+</div>
+</div>
+

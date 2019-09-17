@@ -243,7 +243,7 @@ plot1 <- ggplot(district_info, aes(x = n, color = party, fill = party)) +
   theme(legend.position = "top") +
   scale_color_manual(values = c("blue", "white", "red")) +
   scale_fill_manual(values = c("blue", "white", "red")) +
-  labs(title="Incidents within Districts Histogram (436 Districts)", x = "Incidents", y = "# of Districts") + 
+  labs(title="", x = "Incidents", y = "# of Districts") + 
   theme_classic()
   
 plotly::ggplotly(plot1)
@@ -264,14 +264,15 @@ plotly::ggplotly(plot1)
 </div>
 <div class="col-md-8">
 ```{r echo=FALSE, out.width=700}
-plot2 <- ggplot(district_info, aes(x=gini, y = n, color = party)) + 
-  scale_color_manual(values = c("blue", "black", "red")) +
-  geom_point(alpha = .35) +
-  labs(title="Gun Violence by Income Inequality", x = "Income Inequality (Gini) Index", y = "Incidents") +
-  scale_y_continuous(breaks = seq(0, 3000, by = 300)) +
-  theme_grey()
-
-plotly::ggplotly(plot2)
+district_info %>%
+  filter(sq_miles <= 13000) %>%
+  plotly::plot_ly(x = ~gini, y = ~n, type = 'scatter', color = ~party, colors = c("blue", "black", "red"),
+          text = ~paste("Square Miles: ", sq_miles, 
+                        '<br># of Incidents: ', n,
+                        '<br>Gini Index: ', gini,
+                        '<br>PVI: ', PVI,
+                        '<br>Clinton vs Trump: ', `Clinton %`, '% vs', `Trump %`, '%',
+                        '<br>District ', district))
 ```
 </div>
 </div>
@@ -287,17 +288,18 @@ plotly::ggplotly(plot2)
 </div>
 <div class="col-md-8">
 ```{r echo=FALSE, out.width=700}
-plot3 <- district_info %>%
+district_info %>%
   filter(sq_miles <= 13000) %>%
-  ggplot(aes(x=sq_miles, y = n, color = party)) + 
-  scale_color_manual(values = c("blue", "black", "red")) +
-  geom_point(alpha = .35) +
-  labs(title="Incidents by District Square Miles", x = "Square Miles", y = "Incidents") +
-  #scale_x_continuous(breaks = seq(0, 1000, by = 100), limits = c(0, 1000)) +
-  theme_grey() +
-  facet_grid(party ~ .)
-
-plotly::ggplotly(plot3)
+  transform(id = as.integer(factor(party))) %>%
+  plotly::plot_ly(x = ~sq_miles, y = ~n, type = 'scatter', color = ~party, colors = c("blue", "black", "red"),
+          text = ~paste("Square Miles: ", sq_miles, 
+                        '<br># of Incidents: ', n,
+                        '<br>Gini Index: ', gini,
+                        '<br>PVI: ', PVI,
+                        '<br>Clinton vs Trump: ', `Clinton..`, '% vs', `Trump..`, '%',
+                        '<br>District ', district),
+          yaxis = ~paste0("y", id)) %>%
+            plotly::subplot(nrows = 2, shareX = T, titleY = T)
 ```
 </div>
 </div>
@@ -335,7 +337,7 @@ plotly::ggplotly(plot3)
 <div class="col-lg-3 col-md-3" col-sm-3 col-xs-0></div>
 </div>
 <div class="row">
-<div class="col-lg-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 ```{r district-table, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 library(knitr)
 library(kableExtra)

@@ -41,9 +41,10 @@ h1, h2, h3 {
 }
 
 .logo-img {
-  height: 50px;
   width: 45px;
-  margin-bottom: 20px;
+  height: 75px;
+  position: relative;
+  top: -5px;
 }
 
 .logo span {
@@ -51,8 +52,9 @@ h1, h2, h3 {
     font-size: 3em;
     padding-left: 10px;
     font-family: 'Biryani', serif; 
-    font-weight: 600
-    ;
+    font-weight: 600;
+    position: relative;
+    top: -25px;
 }
 
 .logo-link {
@@ -98,30 +100,33 @@ h1, h2, h3 {
 }
 
 .navigationList-item--border {
-    /* line-height: 30px; */
     border: 1px solid #7C0C01;
     border-radius: 15px;
     padding: 7px 20px;
 }
 
-.navigationList-link:link {
+.navigationList-link {
     text-decoration: none;
     color: #7C0C01;
     transition: ease-in-out .5s;
 }
+/*
+.navigationList-link:visted {
+    text-decoration: none;
+    color: #7C0C01;
+    transition: ease-in-out .5s;
+}
+*/
 
-.navigationList-link:hover {
+.navigationList-list:hover {
     color: black;
     text-decoration: none;
+    text-shadow: #7C0C01 0 0 5px;
 }
 
-.navigationList-link:last-child:hover {
+.navigationList-item:last-child a:hover {
     color: white;
     text-decoration: none;
-}
-
-.navigationList-link:visted {
-  color: #7c0c01;
 }
 
 .navigationList-item--border:hover {
@@ -380,8 +385,13 @@ h1, h2, h3 {
 }
 
 .thumbnail {
-  padding: 150px 15px 150px 15px;
+  padding: 30% 15px 30% 15px;
   border: none;
+  background-image: url(img/mantel-logo-4.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position:center;
+  ;
 }
 
 .thumbnail h3 {
@@ -411,6 +421,10 @@ h1, h2, h3 {
   background-color: #260603;
 }
 
+.district-table {
+  display: auto;
+}
+
 .district-table h1 {
   font-family: 'Biryani';
   color: white;
@@ -433,6 +447,14 @@ h1, h2, h3 {
   margin: 4px;
   max-width: 100% !important;
 }
+
+@media (max-width: screen-xs-max) {
+  
+    .district-table: {
+        display: none;
+    }
+}
+
 
 /* MORE */
 

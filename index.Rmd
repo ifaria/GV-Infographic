@@ -113,9 +113,9 @@ options(scipen = 2)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #### SETTING COLORS
 
-partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 11))
-gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 9))
-incident_district_colors <- colorBin("Purples", domain = c(0, 2646), bins = seq(0, 2646, length.out = 9))
+partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 5))
+gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 5))
+incident_district_colors <- colorBin("Oranges", domain = c(0, 2646), bins = seq(0, 2646, length.out = 5))
 
 ####
 
@@ -135,11 +135,10 @@ district_labels <- sprintf(
 ###
 ```
 <div class="container-fluid map">
-  <div class="row">
-  <div class="col-lg-3 col-md-2 col-sm-1 col-xs-0"></div>
-  <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-  <h1 id="the-data"> the data </h1>
-
+<div class="row">
+<div class="col-lg-3 col-md-2 col-sm-1 col-xs-0"></div>
+<div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+<h1 id="the-data"> the data </h1>
 <ul>
 <li><i class="fas fa-asterisk"></i>Gun related incidents were collected from [Gun Violence Archive](https://www.gunviolencearchive.org/).</li>
 <li><i class="fas fa-asterisk"></i>Congressional district shape files were gathered from the **USAboundaries** packages in R. </li>
@@ -160,8 +159,8 @@ district_labels <- sprintf(
 </div>
 
 <div class="row map">
-  <div class="col-lg-1 col-md-0 col-sm-0 col-xs-0"></div>
-  <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 map-text">
+<div class="col-lg-1 col-md-0 col-sm-0 col-xs-0"></div>
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 map-text">
 <p class="space">
 <p>
 Congressional districts all have around 711,000 people. We could compare incidents between states, because gun laws are mostly a state matter, but examining congressional districts offer greater insight into the role of partisanship in this nation-wide issue.
@@ -180,31 +179,37 @@ The *gini index* measures the concentration of wealth within a certain area. Is 
 <h3>115th Congress, 2016 - 2018</h3>
 ```{r leaflet_map, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width="100%", paged.print=FALSE}
 leaflet(district_map) %>%
-  addProviderTiles(providers$Stamen.Toner) %>%
-  addProviderTiles(providers$CartoDB.PositronOnlyLabels) %>%
-  addPolygons(fillColor = ~gini_district_colors(gini), 
-              weight = .1,
-              opacity = 1,
-              color = "black",
-              label = ~district_labels,
-              group = "(District) Income Inequality Index") %>%
-  addPolygons(fillColor = ~partisan_district_colors(index), 
-              weight = .1,
-              opacity = 1,
-              color = "black",
-              label = ~district_labels,
-              group = "(District) Partisan Voter Index") %>%
-  addPolygons(fillColor = ~incident_district_colors(n), 
-              weight = .1,
-              opacity = 1,
-              color = "black",
-              label = ~district_labels,
-              group = "(District) Number of Incidents") %>%
-  addLayersControl(
-    baseGroups = c("(District) Income Inequality Index", "(District) Partisan Voter Index", "(District) Number of Incidents"),
-    options = layersControlOptions(collapse = FALSE)
-  ) %>%
-  setView(lng = -97, lat = 38, zoom = 5)
+addProviderTiles(providers$Stamen.Toner, group = "Map") %>%
+#addProviderTiles(providers$CartoDB.PositronOnlyLabels) %>%
+addPolygons(fillColor = ~gini_district_colors(gini), 
+weight = .1,
+opacity = 1,
+color = "black",
+label = ~district_labels,
+group = "Income Inequality Index") %>%
+addPolygons(fillColor = ~partisan_district_colors(index), 
+weight = .1,
+opacity = 1,
+color = "black",
+label = ~district_labels,
+group = "Partisan Voter Index") %>%
+addPolygons(fillColor = ~incident_district_colors(n), 
+weight = .1,
+opacity = 1,
+color = "black",
+label = ~district_labels,
+group = "Number of Incidents") %>%
+addLegend("topleft", pal = gini_district_colors, values = ~gini, group = "Income Inequality Index") %>%
+addLegend("topleft", pal = partisan_district_colors, values = ~PVI, group = "Partisan Voter Index") %>%
+addLegend("topleft", pal = incident_district_colors, values = ~n, group = "Number of Incidents") %>%
+addLayersControl(
+overlayGroups = c("Income Inequality Index", "Partisan Voter Index", "Number of Incidents"),
+options = layersControlOptions(collapse = FALSE)
+) %>%
+setView(lng = -97, lat = 38, zoom = 5) %>%
+hideGroup("Income Inequality Index") %>%
+hideGroup("Partisan Voter Index") %>%
+hideGroup("Number of Incidents")
 
 ```
 </div>
@@ -283,7 +288,7 @@ district_info %>%
 <div class="row">
 <div class="col-md-4"><div class="thumbnail">
 <h3>Incidents by Square Area</h3>
-<p>The further to the left, the smaller the square miles the district is, meaning there are more people in a small area. We see that the red dots extend further towards the right than the blue dots.</p>
+<p>Pay close attention to the y-axis; the number of incidents for Democrats ends below 3000, while for Republicans it ends around 500. The further to the left, the smaller the square miles the district is, meaning there are more people in a small area. We see that the red dots extend further towards the right than the blue dots.</p>
 </div>
 </div>
 <div class="col-md-8">

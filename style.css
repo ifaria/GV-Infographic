@@ -200,7 +200,7 @@ h1, h2, h3 {
 .title-text {
     position:sticky;
     color: white;
-    top: 400px;
+    top: 300px;
     padding-bottom: 20px;
 }
 
@@ -293,7 +293,6 @@ h1, h2, h3 {
   color: black;
 }
 
-
 .map a {
   color: #7c0f01;
   font-weight: bold;
@@ -316,9 +315,12 @@ h1, h2, h3 {
   margin: 30px;
 }
 
-.map-chunk {
+.map-chunk h3 {
   text-align: center;
+  color: black;
 }
+
+
 .map-chunk .html-widget {
   border: 5px solid black;
   contain: content;
@@ -459,7 +461,7 @@ h1, h2, h3 {
 /* MORE */
 
 .concluding-section {
-    height: 350px;
+    height: 300px;
     width: 100%;
     background-attachment: fixed;
     background-image: url(red-forest-3.jpg);

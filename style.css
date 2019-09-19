@@ -384,6 +384,7 @@ h1, h2, h3 {
 
 .carousel-control {
   border-radius: 30px;
+  width: 10%;
 }
 
 .thumbnail {

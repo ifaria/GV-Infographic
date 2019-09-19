@@ -113,9 +113,9 @@ options(scipen = 2)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #### SETTING COLORS
 
-partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 5))
-gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 5))
-incident_district_colors <- colorBin("Oranges", domain = c(0, 2646), bins = seq(0, 2646, length.out = 5))
+partisan_district_colors <- colorBin("RdBu", domain = c(-44, 44), bins = seq(-44, 44, length.out = 6))
+gini_district_colors <- colorBin("Greens", domain = c(0.38, 0.6), bins = seq(0.38, .6, length.out = 6))
+incident_district_colors <- colorBin("Oranges", domain = c(0, 2646), bins = seq(0, 2646, length.out = 6))
 
 ####
 
@@ -264,7 +264,7 @@ plotly::ggplotly(plot1)
 <div class="col-md-4">
 <div class="thumbnail">
 <h3>Gun Violence by Income Inequality</h3>
-<p>The further towards the right marks a higher Gini index, indicating that these districts have the majority of their wealth concentrated in the between fewer people. The higher the dot is, the greater the number of incidents that occured. Again, we see fewer red dots on the higher end of the chart.</p>
+<p>Further towards the right marks a higher Gini index, indicating that these districts have the majority of their wealth concentrated between fewer people. The higher the dot is, the greater the number of incidents that occured. Again, we see fewer red dots on the higher end of the chart.</p>
 </div>
 </div>
 <div class="col-md-8">

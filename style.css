@@ -453,12 +453,30 @@ h1, h2, h3 {
 
 @media (max-width: 600px) {
   
-    .district-table {
+    .dtable {
         display: none !important;
-        visibility:none !important;
     }
 }
 
+.hidden-text {
+  display: none;
+  background-color: #260603;
+  color: white;
+  text-align: center;
+  font-size: xx-large;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  
+    .hidden-text {
+        display: block;
+    }
+    .district-table h1 {
+      color: #260603;
+      display:none;
+    }
+}
 
 /* MORE */
 

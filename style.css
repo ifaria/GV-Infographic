@@ -451,10 +451,11 @@ h1, h2, h3 {
   max-width: 100% !important;
 }
 
-@media (max-width: screen-xs-max) {
+@media (max-width: 600px) {
   
-    .district-table: {
-        display: none;
+    .district-table {
+        display: none !important;
+        visibility:none !important;
     }
 }
 

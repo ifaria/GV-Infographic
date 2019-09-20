@@ -5,8 +5,6 @@ body {
     color: black;
     width: 100%;
     background-color:white;
-    /* overflow-y: hidden; */
-
 }
 
 h1, h2, h3 {
@@ -18,7 +16,7 @@ h1, h2, h3 {
 
 .header {
     min-width: 320px;
-    height: 70px;
+    /*height: 70px;*/
     top: 0;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -31,6 +29,7 @@ h1, h2, h3 {
     z-index: 3;
     display: block;
 }
+
 
 #header .title{
   display: none;
@@ -60,6 +59,7 @@ h1, h2, h3 {
 .logo-link {
     color: black;
     text-decoration: none;
+    position: absolute;
 }
 
 .logo-link :nth-child(3) {
@@ -92,17 +92,20 @@ h1, h2, h3 {
 .navigationList-item {
     position: relative;
     display: inline-block;
-    margin-left: 30px;
+    /*margin-left: 15px;*/
+    padding-top: 9px;
 }
 
 .navigationList-item:last-child {
-    margin-left: 30px;
+    /*margin-left: 30px;*/
 }
 
 .navigationList-item--border {
     border: 1px solid #7C0C01;
     border-radius: 15px;
-    padding: 7px 20px;
+    padding-top: 0px;
+    /*padding: 7px 20px;*/
+    margin-top: 9px;
 }
 
 .navigationList-link {
@@ -110,13 +113,6 @@ h1, h2, h3 {
     color: #7C0C01;
     transition: ease-in-out .5s;
 }
-/*
-.navigationList-link:visted {
-    text-decoration: none;
-    color: #7C0C01;
-    transition: ease-in-out .5s;
-}
-*/
 
 .navigationList-list:hover {
     color: black;
@@ -136,41 +132,49 @@ h1, h2, h3 {
     color: white;
 }
 
-/*
-@media (max-width: 800px) { 
-    .logo-img {
-      margin-bottom: 6px;
-    }
-}
-*/
 
-.burger {
-    display: none;
+.navbar-toggle {
+    /*display: none;*/
     position: relative;
-    width: 50px;
+    width: fit-content;
     height: 100%;
     right: 50px;
     color: #4d2100;
 }
 
-@media (max-width: 1000px) {
-    .navigationList {
-        display: none;
-    }
-    .burger {
-        display: block;
-    }
-    .burger i {
+
+.navbar-nav {
+  float: right;
+}
+.navbar-nav li a:hover {
+	background-color: #444444;
+	transition: 0.7s all linear;
+	height: 100%;
+}
+
+.navbar-toggle i {
         font-size: 4em;
-    }
 }
 
-@media (max-width: 700px) {
-
-    .burger {
-        right: 10px;
     }
+
+@media (max-width: 1200px) {
+      .navbar .container {
+          width: 375px;
+      }
 }
+    
+    @media (max-width: 768px) {
+      .navbar .container {
+          width: 375px;
+      }
+}
+
+.in {
+  float: left;
+}
+
+
 
 /* End of Header */
 
@@ -181,6 +185,7 @@ h1, h2, h3 {
 .gap {
   height:75px;
   width: 100%;
+  background-color:black;
 }
 
 .title {
